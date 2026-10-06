@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>JARVIS Controller</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 20px 12px;
+      background: #080808;
+      color: white;
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 38px;
+      margin: 10px 0 2px;
+    }
+
+    .subtitle {
+      color: #888;
+      margin-bottom: 25px;
+    }
+
+    .command-box {
+      width: 95%;
+      max-width: 500px;
+      padding: 16px;
+      font-size: 20px;
+      border-radius: 12px;
+      border: 2px solid #444;
+      background: #181818;
+      color: white;
+      text-align: center;
+      outline: none;
+    }
+
+    .command-box:focus {
+      border-color: #008cff;
+    }
+
+    .send {
+      width: 95%;
+      max-width: 500px;
+      padding: 16px;
+      margin: 12px 0 20px;
+      border: none;
+      border-radius: 12px;
+      background: #0066ff;
+      color: white;
+      font-size: 21px;
+      font-weight: bold;
+    }
+
+    .send:active,
+    .led-button:active {
+      transform: scale(0.96);
+    }
+
+    #result {
+      width: 95%;
+      max-width: 500px;
+      min-height: 45px;
+      margin: 10px auto 20px;
+      padding: 12px;
+      border-radius: 10px;
+      background: #181818;
+      font-size: 16px;
+    }
+
+    hr {
+      border: 0;
+      border-top: 1px solid #333;
+      margin: 25px 0;
+    }
+
+    h2 {
+      margin-bottom: 15px;
+    }
+
+    .led-button {
+      width: 140px;
+      padding: 14px 8px;
+      margin: 5px;
+      border: none;
+      border-radius: 10px;
+      color: white;
+      font-size: 17px;
+      font-weight: bold;
+    }
+
+    .on {
+      background: green;
+    }
+
+    .off {
+      background: #c40000;
+    }
+
+    .voice-info {
+      color: #999;
+      font-size: 14px;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>🤖 JARVIS</h1>
+
+  <div class="subtitle">
+    ESP32 Voice & Light Controller
+  </div>
+
+  <!-- COMMAND INPUT -->
+
+  <input
+    id="command"
+    class="command-box"
+    type="text"
+    placeholder="Type or 🎤 speak command"
+    autocomplete="off"
+    autocorrect="off"
+    autocapitalize="sentences"
+    spellcheck="false"
+  >
+
+  <br>
+
+  <button class="send" onclick="sendTypedCommand()">
+    📡 SEND COMMAND
+  </button>
+
+  <div id="result">
+    Ready
+  </div>
+
+  <div class="voice-info">
+    🎤 Tap the microphone on your phone keyboard<br>
+    Say <b>LED 1 ON</b>, <b>LED 3 OFF</b>,<br>
+    <b>ALL ON</b> or <b>ALL OFF</b>
+  </div>
+
+  <hr>
+
+  <h2>⚡ Quick Control</h2>
+
+  <button class="led-button on"
+          onclick="sendCommand('ALL ON')">
+    ALL ON
+  </button>
+
+  <button class="led-button off"
+          onclick="sendCommand('ALL OFF')">
+    ALL OFF
+  </button>
+
+  <br><br>
+
+  <button class="led-button on"
+          onclick="sendCommand('LED 1 ON')">
+    LED 1 ON
+  </button>
+
+  <button class="led-button off"
+          onclick="sendCommand('LED 1 OFF')">
+    LED 1 OFF
+  </button>
+
+  <br>
+
+  <button class="led-button on"
+          onclick="sendCommand('LED 2 ON')">
+    LED 2 ON
+  </button>
+
+  <button class="led-button off"
+          onclick="sendCommand('LED 2 OFF')">
+    LED 2 OFF
+  </button>
+
+  <br>
+
+  <button class="led-button on"
+          onclick="sendCommand('LED 3 ON')">
+    LED 3 ON
+  </button>
+
+  <button class="led-button off"
+          onclick="sendCommand('LED 3 OFF')">
+    LED 3 OFF
+  </button>
+
+  <br>
+
+  <button class="led-button on"
+          onclick="sendCommand('LED 4 ON')">
+    LED 4 ON
+  </button>
+
+  <button class="led-button off"
+          onclick="sendCommand('LED 4 OFF')">
+    LED 4 OFF
+  </button>
+
+  <br>
+
+  <button class="led-button on"
+          onclick="sendCommand('LED 5 ON')">
+    LED 5 ON
+  </button>
+
+  <button class="led-button off"
+          onclick="sendCommand('LED 5 OFF')">
+    LED 5 OFF
+  </button>
+
+
+  <script>
+
+    // =================================================
+    // GOOGLE APPS SCRIPT URL
+    // =================================================
+
+    const SCRIPT_URL =
+      "https://script.google.com/macros/s/AKfycbxpXVx6ZUOxWn31ftJpCJnjspy3SbXTiENm-Ph1nwTqjcRFd_-hhijPFVRmpeQFvnCO2A/exec";
+
+
+    // =================================================
+    // SEND TYPED / VOICE-TYPED COMMAND
+    // =================================================
+
+    function sendTypedCommand() {
+
+      const box =
+        document.getElementById("command");
+
+      const command =
+        box.value.trim();
+
+      if (command === "") {
+
+        document.getElementById("result").innerHTML =
+          "⚠️ Please enter a command";
+
+        return;
+      }
+
+      sendCommand(command);
+
+      box.value = "";
+    }
+
+
+    // =================================================
+    // SEND COMMAND TO GOOGLE APPS SCRIPT
+    // =================================================
+
+    function sendCommand(command) {
+
+      command = command.trim();
+
+      if (command === "") {
+        return;
+      }
+
+      const result =
+        document.getElementById("result");
+
+      result.innerHTML =
+        "📡 Sending: <b>" +
+        escapeHTML(command) +
+        "</b>";
+
+
+      const url =
+        SCRIPT_URL +
+        "?action=send&command=" +
+        encodeURIComponent(command);
+
+
+      fetch(url, {
+        method: "GET"
+      })
+
+      .then(response => {
+
+        if (!response.ok) {
+          throw new Error(
+            "HTTP " + response.status
+          );
+        }
+
+        return response.json();
+      })
+
+      .then(data => {
+
+        if (data.success) {
+
+          result.innerHTML =
+            "✅ Command sent: <b>" +
+            escapeHTML(data.command) +
+            "</b>";
+
+        } else {
+
+          result.innerHTML =
+            "❌ " +
+            escapeHTML(
+              data.message || "Command failed"
+            );
+        }
+      })
+
+      .catch(error => {
+
+        console.error(error);
+
+        result.innerHTML =
+          "❌ Unable to contact JARVIS server";
+      });
+    }
+
+
+    // =================================================
+    // SAFETY: HTML ESCAPE
+    // =================================================
+
+    function escapeHTML(text) {
+
+      return text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+
+    // =================================================
+    // ENTER KEY
+    // =================================================
+
+    document
+      .getElementById("command")
+      .addEventListener(
+        "keydown",
+        function(event) {
+
+          if (event.key === "Enter") {
+            sendTypedCommand();
+          }
+
+        }
+      );
+
+  </script>
+
+</body>
+</html>
