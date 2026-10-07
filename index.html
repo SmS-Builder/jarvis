@@ -1,625 +1,430 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-
-<meta name="viewport"
-      content="width=device-width, initial-scale=1">
-
-<title>JARVIS</title>
-
-<style>
-
-* {
-  box-sizing: border-box;
-}
-
-body {
-
-  margin: 0;
-
-  padding: 20px;
-
-  font-family:
-    Arial,
-    sans-serif;
-
-  background:
-    #050505;
-
-  color:
-    white;
-
-  text-align:
-    center;
-}
-
-h1 {
-
-  margin-top:
-    15px;
-
-  margin-bottom:
-    5px;
-
-  font-size:
-    42px;
-}
-
-.subtitle {
-
-  color:
-    #999;
-
-  margin-bottom:
-    25px;
-}
-
-.command-box {
-
-  width:
-    100%;
-
-  max-width:
-    500px;
-
-  padding:
-    16px;
-
-  font-size:
-    18px;
-
-  border:
-    1px solid #555;
-
-  border-radius:
-    12px;
-
-  background:
-    #111;
-
-  color:
-    white;
-
-  outline:
-    none;
-}
-
-button {
-
-  width:
-    100%;
-
-  max-width:
-    500px;
-
-  padding:
-    15px;
-
-  margin-top:
-    10px;
-
-  border:
-    none;
-
-  border-radius:
-    12px;
-
-  font-size:
-    17px;
-
-  font-weight:
-    bold;
-
-  cursor:
-    pointer;
-}
-
-.send {
-
-  background:
-    #00c853;
-
-  color:
-    white;
-}
-
-.send:active {
-
-  transform:
-    scale(0.98);
-}
-
-#result {
-
-  margin:
-    18px auto;
-
-  padding:
-    15px;
-
-  max-width:
-    500px;
-
-  background:
-    #111;
-
-  border-radius:
-    10px;
-
-  min-height:
-    50px;
-}
-
-.voice-info {
-
-  color:
-    #aaa;
-
-  line-height:
-    1.6;
-
-  margin:
-    15px;
-}
-
-hr {
-
-  border:
-    0;
-
-  border-top:
-    1px solid #333;
-
-  margin:
-    30px 0;
-}
-
-h2 {
-
-  margin-bottom:
-    15px;
-}
-
-.grid {
-
-  display:
-    grid;
-
-  grid-template-columns:
-    1fr 1fr;
-
-  gap:
-    10px;
-
-  max-width:
-    500px;
-
-  margin:
-    auto;
-}
-
-.grid button {
-
-  margin:
-    0;
-
-  font-size:
-    15px;
-}
-
-.on {
-
-  background:
-    #00a152;
-
-  color:
-    white;
-}
-
-.off {
-
-  background:
-    #c62828;
-
-  color:
-    white;
-}
-
-.all {
-
-  grid-column:
-    span 2;
-
-  background:
-    #1565c0;
-
-  color:
-    white;
-}
-
-.footer {
-
-  margin-top:
-    30px;
-
-  color:
-    #555;
-
-  font-size:
-    13px;
-}
-
-</style>
-
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+  <title>JARVIS</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: #080b12;
+      color: white;
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    h1 {
+      color: #00eaff;
+      margin-bottom: 5px;
+    }
+
+    .subtitle {
+      color: #888;
+      margin-bottom: 20px;
+    }
+
+    input {
+      width: 100%;
+      padding: 15px;
+      border-radius: 10px;
+      border: 1px solid #333;
+      background: #111722;
+      color: white;
+      font-size: 17px;
+      outline: none;
+    }
+
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 13px;
+      margin: 5px;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    .send {
+      width: 100%;
+      background: #00bcd4;
+      color: white;
+      font-size: 18px;
+      margin-top: 10px;
+    }
+
+    .all {
+      width: 44%;
+      color: white;
+    }
+
+    .on {
+      background: #159447;
+    }
+
+    .off {
+      background: #b52b2b;
+    }
+
+    .led {
+      width: 44%;
+      background: #202938;
+      color: white;
+    }
+
+    .weather {
+      width: 92%;
+      background: #7357d8;
+      color: white;
+      font-size: 17px;
+      margin-top: 15px;
+    }
+
+    #status {
+      margin-top: 20px;
+      padding: 12px;
+      background: #111722;
+      border-radius: 10px;
+      color: #aaa;
+      min-height: 45px;
+    }
+
+    .section {
+      margin-top: 20px;
+      padding-top: 15px;
+      border-top: 1px solid #222;
+    }
+  </style>
 </head>
-
 
 <body>
 
-<h1>🤖 JARVIS</h1>
-
-<div class="subtitle">
-ESP32 Voice & Light Controller
-</div>
-
-
-<input
-  id="command"
-  class="command-box"
-  type="text"
-  placeholder="Type or 🎤 speak command"
-  autocomplete="off"
-  autocorrect="off"
-  autocapitalize="sentences"
-  spellcheck="false"
->
-
-
-<button
-  class="send"
-  onclick="sendTypedCommand()">
-
-📡 SEND COMMAND
-
-</button>
-
-
-<div id="result">
-
-Ready
-
-</div>
-
-
-<div class="voice-info">
-
-🎤 Tap the microphone on your phone keyboard.
-
-<br>
-
-Say:
-
-<b>LED 1 ON</b>
-
-<br>
-
-<b>LED 3 OFF</b>
-
-<br>
-
-<b>ALL ON</b>
-
-<br>
-
-<b>ALL OFF</b>
-
-</div>
-
-
-<hr>
-
-
-<h2>⚡ Quick Control</h2>
-
-
-<div class="grid">
-
-<button
-  class="all"
-  onclick="sendCommand('ALL ON')">
-
-ALL ON
-
-</button>
-
-
-<button
-  class="all"
-  onclick="sendCommand('ALL OFF')">
-
-ALL OFF
-
-</button>
-
-
-<button
-  class="on"
-  onclick="sendCommand('LED 1 ON')">
-
-LED 1 ON
-
-</button>
-
-
-<button
-  class="off"
-  onclick="sendCommand('LED 1 OFF')">
-
-LED 1 OFF
-
-</button>
-
-
-<button
-  class="on"
-  onclick="sendCommand('LED 2 ON')">
-
-LED 2 ON
-
-</button>
-
-
-<button
-  class="off"
-  onclick="sendCommand('LED 2 OFF')">
-
-LED 2 OFF
-
-</button>
-
-
-<button
-  class="on"
-  onclick="sendCommand('LED 3 ON')">
-
-LED 3 ON
-
-</button>
-
-
-<button
-  class="off"
-  onclick="sendCommand('LED 3 OFF')">
-
-LED 3 OFF
-
-</button>
-
-
-<button
-  class="on"
-  onclick="sendCommand('LED 4 ON')">
-
-LED 4 ON
-
-</button>
-
-
-<button
-  class="off"
-  onclick="sendCommand('LED 4 OFF')">
-
-LED 4 OFF
-
-</button>
-
-
-<button
-  class="on"
-  onclick="sendCommand('LED 5 ON')">
-
-LED 5 ON
-
-</button>
-
-
-<button
-  class="off"
-  onclick="sendCommand('LED 5 OFF')">
-
-LED 5 OFF
-
-</button>
+<div class="container">
+
+  <h1>JARVIS</h1>
+  <div class="subtitle">Smart ESP32 Controller</div>
+
+  <input
+    id="command"
+    type="text"
+    placeholder="Type or 🎤 speak command"
+  >
+
+  <button class="send" onclick="sendCommand()">
+    SEND
+  </button>
+
+  <div class="section">
+
+    <button class="all on"
+            onclick="sendQuick('all on')">
+      ALL ON
+    </button>
+
+    <button class="all off"
+            onclick="sendQuick('all off')">
+      ALL OFF
+    </button>
+
+  </div>
+
+  <div class="section">
+
+    <button class="led"
+            onclick="sendQuick('led 1 on')">
+      LED 1 ON
+    </button>
+
+    <button class="led"
+            onclick="sendQuick('led 1 off')">
+      LED 1 OFF
+    </button>
+
+    <button class="led"
+            onclick="sendQuick('led 2 on')">
+      LED 2 ON
+    </button>
+
+    <button class="led"
+            onclick="sendQuick('led 2 off')">
+      LED 2 OFF
+    </button>
+
+    <button class="led"
+            onclick="sendQuick('led 3 on')">
+      LED 3 ON
+    </button>
+
+    <button class="led"
+            onclick="sendQuick('led 3 off')">
+      LED 3 OFF
+    </button>
+
+    <button class="led"
+            onclick="sendQuick('led 4 on')">
+      LED 4 ON
+    </button>
+
+    <button class="led"
+            onclick="sendQuick('led 4 off')">
+      LED 4 OFF
+    </button>
+
+    <button class="led"
+            onclick="sendQuick('led 5 on')">
+      LED 5 ON
+    </button>
+
+    <button class="led"
+            onclick="sendQuick('led 5 off')">
+      LED 5 OFF
+    </button>
+
+  </div>
+
+  <div class="section">
+
+    <button class="weather"
+            onclick="getWeather()">
+      🌤️ WHAT'S THE WEATHER?
+    </button>
+
+  </div>
+
+  <div id="status">
+    JARVIS READY
+  </div>
 
 </div>
-
-
-<div class="footer">
-
-JARVIS v1.0 • ESP32
-
-</div>
-
 
 <script>
 
-
-// =====================================================
-// GOOGLE APPS SCRIPT URL
-// =====================================================
-
 const SCRIPT_URL =
-  "https://script.google.com/macros/s/"
-  + "AKfycbyNSzanFGieKBDeielaUpXfAW7GPYX2hGZXD1j4DPPALX9fC5Ey8qQMsUXGFd7egMJILA"
-  + "/exec";
+  "https://script.google.com/macros/s/" +
+  "AKfycbz-bkLAVa8pSEpHpBCtJ71x3XM7PVa_Zz_vXdY0_xlmR2_o-buddyRizpp2dQ-Axb0o" +
+  "/exec";
 
 
 // =====================================================
-// SEND TEXT COMMAND
+// STATUS
 // =====================================================
 
-function sendTypedCommand() {
+function showStatus(text) {
+  document.getElementById("status").innerText = text;
+}
 
-  const box =
-    document.getElementById(
-      "command"
-    );
 
+// =====================================================
+// SEND NORMAL COMMAND
+// =====================================================
+
+function sendCommand() {
+
+  const input =
+    document.getElementById("command");
 
   const command =
-    box.value.trim();
+    input.value.trim();
+
+  if (!command) {
+    showStatus("Please enter a command");
+    return;
+  }
+
+  sendToGoogle(command);
+}
 
 
-  if (
-    command === ""
-  ) {
+// =====================================================
+// QUICK BUTTON
+// =====================================================
 
-    document.getElementById(
-      "result"
-    ).innerHTML =
-      "⚠️ Please enter a command";
+function sendQuick(command) {
+
+  sendToGoogle(command);
+
+}
+
+
+// =====================================================
+// SEND TO GOOGLE APPS SCRIPT
+// =====================================================
+
+function sendToGoogle(command) {
+
+  showStatus("Sending: " + command);
+
+  const url =
+    SCRIPT_URL +
+    "?action=send&command=" +
+    encodeURIComponent(command);
+
+  fetch(url)
+
+    .then(response => response.json())
+
+    .then(data => {
+
+      if (data.success) {
+
+        showStatus(
+          "✅ Command sent: " +
+          data.command
+        );
+
+      } else {
+
+        showStatus(
+          "❌ " +
+          (data.message || "Command failed")
+        );
+
+      }
+
+    })
+
+    .catch(error => {
+
+      console.error(error);
+
+      showStatus(
+        "❌ Connection error"
+      );
+
+    });
+}
+
+
+// =====================================================
+// WEATHER
+// =====================================================
+
+function getWeather() {
+
+  showStatus(
+    "📍 Getting your location..."
+  );
+
+  if (!navigator.geolocation) {
+
+    showStatus(
+      "❌ Location is not supported"
+    );
 
     return;
   }
 
 
-  sendCommand(
-    command
-  );
+  navigator.geolocation.getCurrentPosition(
+
+    function(position) {
+
+      const lat =
+        position.coords.latitude;
+
+      const lon =
+        position.coords.longitude;
 
 
-  box.value = "";
-}
+      showStatus(
+        "📍 Location found. Getting weather..."
+      );
 
 
-// =====================================================
-// SEND COMMAND
-// =====================================================
-
-function sendCommand(
-  command
-) {
-
-  command =
-    command.trim();
+      const url =
+        SCRIPT_URL +
+        "?action=weather" +
+        "&lat=" +
+        encodeURIComponent(lat) +
+        "&lon=" +
+        encodeURIComponent(lon);
 
 
-  if (
-    command === ""
-  ) return;
+      fetch(url)
 
+        .then(response => response.json())
 
-  const result =
-    document.getElementById(
-      "result"
-    );
+        .then(data => {
 
+          if (data.success) {
 
-  result.innerHTML =
-    "📡 Sending: <b>" +
-    escapeHTML(command) +
-    "</b>";
-
-
-  const url =
-    SCRIPT_URL +
-    "?action=send&command=" +
-    encodeURIComponent(
-      command
-    );
-
-
-  fetch(url)
-
-    .then(
-      response => {
-
-        if (
-          !response.ok
-        ) {
-
-          throw new Error(
-            "HTTP " +
-            response.status
-          );
-        }
-
-
-        return response.json();
-      }
-    )
-
-    .then(
-      data => {
-
-        if (
-          data.success
-        ) {
-
-          result.innerHTML =
-            "✅ Command sent: <b>" +
-            escapeHTML(
-              data.command
-            ) +
-            "</b>";
-
-        }
-        else {
-
-          result.innerHTML =
-            "❌ " +
-            escapeHTML(
-              data.message ||
-              "Command failed"
+            showStatus(
+              "🌤️ Weather sent to JARVIS"
             );
-        }
-      }
-    )
 
-    .catch(
-      error => {
+          } else {
 
-        console.error(
-          error
+            showStatus(
+              "❌ Weather error: " +
+              data.message
+            );
+
+          }
+
+        })
+
+        .catch(error => {
+
+          console.error(error);
+
+          showStatus(
+            "❌ Weather connection error"
+          );
+
+        });
+
+    },
+
+    function(error) {
+
+      console.error(error);
+
+      if (error.code === 1) {
+
+        showStatus(
+          "❌ Location permission denied"
         );
 
-        result.innerHTML =
-          "❌ Unable to contact JARVIS server";
+      } else if (error.code === 2) {
+
+        showStatus(
+          "❌ Location unavailable"
+        );
+
+      } else if (error.code === 3) {
+
+        showStatus(
+          "❌ Location request timed out"
+        );
+
+      } else {
+
+        showStatus(
+          "❌ Could not get location"
+        );
+
       }
-    );
-}
 
+    },
 
-// =====================================================
-// SECURITY
-// =====================================================
+    {
+      enableHighAccuracy: true,
+      timeout: 15000,
+      maximumAge: 0
+    }
 
-function escapeHTML(
-  text
-) {
-
-  return text
-    .replace(
-      /&/g,
-      "&amp;"
-    )
-    .replace(
-      /</g,
-      "&lt;"
-    )
-    .replace(
-      />/g,
-      "&gt;"
-    )
-    .replace(
-      /"/g,
-      "&quot;"
-    )
-    .replace(
-      /'/g,
-      "&#039;"
-    );
+  );
 }
 
 
@@ -628,24 +433,16 @@ function escapeHTML(
 // =====================================================
 
 document
-  .getElementById(
-    "command"
-  )
-  .addEventListener(
-    "keydown",
-    function(event) {
+  .getElementById("command")
+  .addEventListener("keydown", function(event) {
 
-      if (
-        event.key === "Enter"
-      ) {
-
-        sendTypedCommand();
-      }
+    if (event.key === "Enter") {
+      sendCommand();
     }
-  );
+
+  });
 
 </script>
 
 </body>
-
 </html>
