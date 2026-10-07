@@ -113,7 +113,11 @@
 <div class="container">
 
   <h1>JARVIS</h1>
-  <div class="subtitle">Smart ESP32 Controller</div>
+
+  <div class="subtitle">
+    Smart ESP32 Controller
+  </div>
+
 
   <input
     id="command"
@@ -121,86 +125,110 @@
     placeholder="Type or 🎤 speak command"
   >
 
-  <button class="send" onclick="sendCommand()">
+
+  <button
+    class="send"
+    onclick="sendCommand()">
     SEND
   </button>
 
+
   <div class="section">
 
-    <button class="all on"
-            onclick="sendQuick('all on')">
+    <button
+      class="all on"
+      onclick="sendQuick('all on')">
       ALL ON
     </button>
 
-    <button class="all off"
-            onclick="sendQuick('all off')">
+    <button
+      class="all off"
+      onclick="sendQuick('all off')">
       ALL OFF
     </button>
 
   </div>
 
+
   <div class="section">
 
-    <button class="led"
-            onclick="sendQuick('led 1 on')">
+    <button
+      class="led"
+      onclick="sendQuick('led 1 on')">
       LED 1 ON
     </button>
 
-    <button class="led"
-            onclick="sendQuick('led 1 off')">
+    <button
+      class="led"
+      onclick="sendQuick('led 1 off')">
       LED 1 OFF
     </button>
 
-    <button class="led"
-            onclick="sendQuick('led 2 on')">
+
+    <button
+      class="led"
+      onclick="sendQuick('led 2 on')">
       LED 2 ON
     </button>
 
-    <button class="led"
-            onclick="sendQuick('led 2 off')">
+    <button
+      class="led"
+      onclick="sendQuick('led 2 off')">
       LED 2 OFF
     </button>
 
-    <button class="led"
-            onclick="sendQuick('led 3 on')">
+
+    <button
+      class="led"
+      onclick="sendQuick('led 3 on')">
       LED 3 ON
     </button>
 
-    <button class="led"
-            onclick="sendQuick('led 3 off')">
+    <button
+      class="led"
+      onclick="sendQuick('led 3 off')">
       LED 3 OFF
     </button>
 
-    <button class="led"
-            onclick="sendQuick('led 4 on')">
+
+    <button
+      class="led"
+      onclick="sendQuick('led 4 on')">
       LED 4 ON
     </button>
 
-    <button class="led"
-            onclick="sendQuick('led 4 off')">
+    <button
+      class="led"
+      onclick="sendQuick('led 4 off')">
       LED 4 OFF
     </button>
 
-    <button class="led"
-            onclick="sendQuick('led 5 on')">
+
+    <button
+      class="led"
+      onclick="sendQuick('led 5 on')">
       LED 5 ON
     </button>
 
-    <button class="led"
-            onclick="sendQuick('led 5 off')">
+    <button
+      class="led"
+      onclick="sendQuick('led 5 off')">
       LED 5 OFF
     </button>
 
   </div>
 
+
   <div class="section">
 
-    <button class="weather"
-            onclick="getWeather()">
+    <button
+      class="weather"
+      onclick="getWeather()">
       🌤️ WHAT'S THE WEATHER?
     </button>
 
   </div>
+
 
   <div id="status">
     JARVIS READY
@@ -208,16 +236,26 @@
 
 </div>
 
+
 <script>
+
+// =====================================================
+// GOOGLE APPS SCRIPT URL
+// =====================================================
 
 const SCRIPT_URL =
   "https://script.google.com/macros/s/AKfycbwhbhxjQ-SSM_P5U29FiEo4e6K6P3zK7cAhJnSE3FhPanhYH-3ItUnImhZV7LMZxtlZCQ/exec";
+
+
 // =====================================================
 // STATUS
 // =====================================================
 
 function showStatus(text) {
-  document.getElementById("status").innerText = text;
+
+  document.getElementById("status").innerText =
+    text;
+
 }
 
 
@@ -233,12 +271,52 @@ function sendCommand() {
   const command =
     input.value.trim();
 
+
   if (!command) {
-    showStatus("Please enter a command");
+
+    showStatus(
+      "Please enter a command"
+    );
+
     return;
   }
 
+
+  // =================================================
+  // WEATHER VOICE / TEXT DETECTION
+  // =================================================
+
+  const lower =
+    command.toLowerCase().trim();
+
+
+  const weatherRequest =
+    lower === "weather" ||
+    lower === "what is the weather" ||
+    lower === "what's the weather" ||
+    lower === "whats the weather" ||
+    lower === "tell me the weather" ||
+    lower === "how is the weather" ||
+    lower === "how's the weather" ||
+    lower === "how is the weather today" ||
+    lower === "what is the weather today" ||
+    lower === "what's the weather today" ||
+    lower.includes("weather today") ||
+    lower.includes("weather");
+
+
+  if (weatherRequest) {
+
+    getWeather();
+
+    return;
+  }
+
+
+  // Normal ESP32 command
+
   sendToGoogle(command);
+
 }
 
 
@@ -254,17 +332,21 @@ function sendQuick(command) {
 
 
 // =====================================================
-// SEND TO GOOGLE APPS SCRIPT
+// SEND NORMAL COMMAND TO GOOGLE
 // =====================================================
 
 function sendToGoogle(command) {
 
-  showStatus("Sending: " + command);
+  showStatus(
+    "Sending: " + command
+  );
+
 
   const url =
     SCRIPT_URL +
     "?action=send&command=" +
     encodeURIComponent(command);
+
 
   fetch(url)
 
@@ -283,9 +365,9 @@ function sendToGoogle(command) {
 
         showStatus(
           "❌ " +
-          (data.message || "Command failed")
+          (data.message ||
+           "Command failed")
         );
-
       }
 
     })
@@ -299,6 +381,7 @@ function sendToGoogle(command) {
       );
 
     });
+
 }
 
 
@@ -309,8 +392,9 @@ function sendToGoogle(command) {
 function getWeather() {
 
   showStatus(
-    "📍 Getting your location..."
+    "📍 Getting your phone location..."
   );
+
 
   if (!navigator.geolocation) {
 
@@ -333,6 +417,13 @@ function getWeather() {
         position.coords.longitude;
 
 
+      console.log(
+        "PHONE GPS:",
+        lat,
+        lon
+      );
+
+
       showStatus(
         "📍 Location found. Getting weather..."
       );
@@ -349,14 +440,31 @@ function getWeather() {
 
       fetch(url)
 
-        .then(response => response.json())
+        .then(response => {
+
+          if (!response.ok) {
+            throw new Error(
+              "HTTP " +
+              response.status
+            );
+          }
+
+          return response.json();
+
+        })
 
         .then(data => {
 
           if (data.success) {
 
             showStatus(
-              "🌤️ Weather sent to JARVIS"
+              "🌤️ " +
+              data.city +
+              " • " +
+              data.temperature +
+              "°C • " +
+              data.description +
+              " — sent to JARVIS"
             );
 
           } else {
@@ -382,9 +490,14 @@ function getWeather() {
 
     },
 
+
     function(error) {
 
-      console.error(error);
+      console.error(
+        "GPS ERROR:",
+        error
+      );
+
 
       if (error.code === 1) {
 
@@ -392,35 +505,43 @@ function getWeather() {
           "❌ Location permission denied"
         );
 
-      } else if (error.code === 2) {
+      }
+
+      else if (error.code === 2) {
 
         showStatus(
           "❌ Location unavailable"
         );
 
-      } else if (error.code === 3) {
+      }
+
+      else if (error.code === 3) {
 
         showStatus(
           "❌ Location request timed out"
         );
 
-      } else {
+      }
+
+      else {
 
         showStatus(
-          "❌ Could not get location"
+          "❌ Could not get phone location"
         );
 
       }
 
     },
 
+
     {
-      enableHighAccuracy: true,
-      timeout: 15000,
-      maximumAge: 0
+      enableHighAccuracy: false,
+      timeout: 30000,
+      maximumAge: 60000
     }
 
   );
+
 }
 
 
@@ -430,13 +551,18 @@ function getWeather() {
 
 document
   .getElementById("command")
-  .addEventListener("keydown", function(event) {
+  .addEventListener(
+    "keydown",
+    function(event) {
 
-    if (event.key === "Enter") {
-      sendCommand();
+      if (event.key === "Enter") {
+
+        sendCommand();
+
+      }
+
     }
-
-  });
+  );
 
 </script>
 
